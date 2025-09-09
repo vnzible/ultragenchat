@@ -106,22 +106,29 @@ io.on('connection', (socket) => {
     });
 
     // Friend requests
-    socket.on('send_friend_request', ({ from, to }) => {
-        const users = readUsers();
-        const fromUser = users.find(u => u.username === from);
-        const toUser = users.find(u => u.username === to);
-        if (!toUser) return socket.emit('friend_request_result', { success: false, message: 'User not found' });
-        if (fromUser.friends.includes(to)) return socket.emit('friend_request_result', { success: false, message: 'Already friends' });
-        if (toUser.friendRequests.includes(from)) return socket.emit('friend_request_result', { success: false, message: 'Request already sent' });
+socket.on('send_friend_request', ({ from, to }) => {
+    const users = readUsers();
+    const fromUser = users.find(u => u.username === from);
+    const toUser = users.find(u => u.username === to);
 
-        toUser.friendRequests.push(from);
-        writeUsers(users);
+    if (!toUser) return socket.emit('friend_request_result', { success: false, message: 'User not found' });
+    if (fromUser.friends.includes(to)) return socket.emit('friend_request_result', { success: false, message: 'Already friends' });
+    if (toUser.friendRequests.includes(from)) return socket.emit('friend_request_result', { success: false, message: 'Request already sent' });
 
-        const recipientSocket = findSocketByUsername(to);
-        if (recipientSocket) io.to(recipientSocket.id).emit('update_requests', toUser.friendRequests);
+    // Add friend request
+    toUser.friendRequests.push(from);
+    writeUsers(users);
 
-        socket.emit('friend_request_result', { success: true, message: 'Friend request sent' });
-    });
+    // Notify sender immediately
+    socket.emit('friend_request_result', { success: true, message: 'Friend request sent' });
+
+    // Notify recipient if online
+    const recipientSocket = findSocketByUsername(to);
+    if (recipientSocket) {
+        recipientSocket.emit('load_requests', toUser.friendRequests);
+    }
+});
+
 
     socket.on('accept_request', ({ from, to }) => {
         const users = readUsers();
