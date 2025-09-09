@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoChat - Premium Real-Time Chat</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <div class="background-animation">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+        
+        <div class="glass-container main-container">
+            <h1 class="logo">Neo<span>Chat</span></h1>
+            <p class="tagline">Experience the future of communication</p>
+            
+            <div class="button-group">
+                <button id="login-btn" class="glass-btn neon-blue">Login</button>
+                <button id="register-btn" class="glass-btn neon-purple">Create Account</button>
+                <button id="how-to-btn" class="glass-btn neon-pink">How to Use</button>
+            </div>
+        </div>
+        
+        <!-- Login Modal -->
+        <div id="login-modal" class="modal">
+            <div class="modal-content glass-container">
+                <span class="close-modal">&times;</span>
+                <h2>Login to Your Account</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="login-username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="glass-btn neon-blue">Enter Chat</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Register Modal -->
+        <div id="register-modal" class="modal">
+            <div class="modal-content glass-container">
+                <span class="close-modal">&times;</span>
+                <h2>Create New Account</h2>
+                <form id="register-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="register-username" placeholder="Choose a username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-password" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="glass-btn neon-purple">Create Account</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- How to Use Modal -->
+        <div id="how-to-modal" class="modal">
+            <div class="modal-content glass-container large-modal">
+                <span class="close-modal">&times;</span>
+                <h2>How to Use NeoChat</h2>
+                <div class="instructions">
+                    <div class="instruction-card">
+                        <div class="number">1</div>
+                        <h3>Create Your Account</h3>
+                        <p>Click "Create New Account", choose a username and password. That's all you need!</p>
+                    </div>
+                    <div class="instruction-card">
+                        <div class="number">2</div>
+                        <h3>Find Friends</h3>
+                        <p>Use the "Add Friend" button in the dashboard to search for other users by their username.</p>
+                    </div>
+                    <div class="instruction-card">
+                        <div class="number">3</div>
+                        <h3>Accept Requests</h3>
+                        <p>Check the "Friend Requests" section to accept or reject incoming friend requests.</p>
+                    </div>
+                    <div class="instruction-card">
+                        <div class="number">4</div>
+                        <h3>Start Chatting</h3>
+                        <p>Click on any friend in your friends list to start a real-time conversation.</p>
+                    </div>
+                    <div class="instruction-card">
+                        <div class="number">5</div>
+                        <h3>Typing Indicators</h3>
+                        <p>See when someone is typing to you, and get read receipts when your messages are seen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Page -->
+    <div id="dashboard-page" class="page">
+        <!-- Sidebar -->
+        <div class="sidebar glass-container">
+            <div class="user-profile">
+                <div class="avatar">
+                    <i class="fas fa-user-astronaut"></i>
+                </div>
+                <h3 id="current-username">Username</h3>
+                <div class="online-dot"></div>
+                <span class="online-text">Online</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button id="add-friend-btn" class="nav-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Friend</span>
+                </button>
+                <button id="friends-btn" class="nav-btn">
+                    <i class="fas fa-users"></i>
+                    <span>My Friends</span>
+                </button>
+                <button id="requests-btn" class="nav-btn">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Friend Requests</span>
+                    <span id="request-count" class="notification-badge">0</span>
+                </button>
+                <button id="logout-btn" class="nav-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </nav>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="main-chat-area">
+            <!-- Chat Header -->
+            <div class="chat-header glass-container">
+    <div id="active-chat-info">
+        <div class="active-friend-avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="active-friend-details">
+            <h3 id="active-friend-name">Select a friend to chat</h3>
+            <p id="typing-indicator"></p>
+        </div>
+    </div>
+    <button id="back-to-dashboard" class="glass-btn neon-pink" style="margin-left:auto;">
+         <i class="fas fa-arrow-left"></i>
+    </button>
+</div>
+
+            
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="chat-messages">
+                <div class="welcome-message">
+                    <i class="fas fa-comments"></i>
+                    <h3>Welcome to NeoChat</h3>
+                    <p>Select a friend from your list to start chatting</p>
+                </div>
+            </div>
+            
+            <!-- Message Input -->
+            <div class="message-input-container glass-container">
+                <div class="message-input-group">
+                    <input type="text" id="message-input" placeholder="Type your message here..." disabled>
+                    <button id="send-message-btn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Active Friends Sidebar -->
+        <div class="active-friends-sidebar glass-container">
+            <h3>Active Friends</h3>
+            <div id="active-friends-list">
+                <p class="no-friends">No active friends</p>
+            </div>
+        </div>
+        
+        <!-- Add Friend Modal -->
+        <div id="add-friend-modal" class="modal">
+            <div class="modal-content glass-container">
+                <span class="close-modal">&times;</span>
+                <h2>Add a Friend</h2>
+                <div class="input-group">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="friend-username" placeholder="Enter username">
+                </div>
+                <button id="send-friend-request" class="glass-btn neon-blue">Send Request</button>
+                <div id="add-friend-result"></div>
+            </div>
+        </div>
+        
+        <!-- Friends List Modal -->
+        <div id="friends-modal" class="modal">
+            <div class="modal-content glass-container large-modal">
+                <span class="close-modal">&times;</span>
+                <h2>My Friends</h2>
+                <div id="friends-list">
+                    <p class="no-data">You haven't added any friends yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Friend Requests Modal -->
+        <div id="requests-modal" class="modal">
+            <div class="modal-content glass-container large-modal">
+                <span class="close-modal">&times;</span>
+                <h2>Friend Requests</h2>
+                <div id="incoming-requests">
+                    <h3>Incoming Requests</h3>
+                    <div id="requests-list">
+                        <p class="no-data">No pending requests</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="notification-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3" preload="auto"></audio>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>

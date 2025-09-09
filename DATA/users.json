@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1757320779605",
+    "username": "akverma",
+    "password": "$2a$10$2KgLdQ40BNfqxh.D96mVN.ipTqBF5k19l.iGeMBZ2cvj/L5hFLSpC",
+    "friends": [
+      "akverma 2"
+    ],
+    "friendRequests": []
+  },
+  {
+    "id": "1757320819915",
+    "username": "akverma 2",
+    "password": "$2a$10$.WbmlPD1srZlqzlplBdRJunDyvycdqKPBDn0Q8lm99W4NifMo1P6i",
+    "friends": [
+      "akverma"
+    ],
+    "friendRequests": []
+  }
+]
