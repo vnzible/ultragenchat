@@ -552,3 +552,36 @@ backBtn.addEventListener('click', () => {
     // ===== final init: ensure we start logged out on page load =====
     resetAppToLanding();
 });
+
+
+
+// update friends list in real-time
+socket.on('update_friends', (friends) => {
+    if (!currentUser) return;
+    const activeFriendsList = document.getElementById('active-friends-list');
+    if (!activeFriendsList) return;
+
+    activeFriendsList.innerHTML = '';
+    if (!friends || friends.length === 0) {
+        activeFriendsList.innerHTML = '<p class="no-friends">No active friends</p>';
+        return;
+    }
+
+    friends.forEach(friend => {
+        const friendEl = document.createElement('div');
+        friendEl.className = 'active-friend';
+        friendEl.dataset.username = friend;
+        friendEl.innerHTML = `
+            <div class="active-friend-avatar-sm">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="active-friend-name">${friend}</div>
+            <div class="active-status"></div>
+        `;
+        friendEl.addEventListener('click', () => {
+            setActiveFriend(friend);
+            closeAllModals();
+        });
+        activeFriendsList.appendChild(friendEl);
+    });
+});

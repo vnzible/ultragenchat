@@ -110,51 +110,54 @@ socket.on('send_friend_request', ({ from, to }) => {
     const users = readUsers();
     const fromUser = users.find(u => u.username === from);
     const toUser = users.find(u => u.username === to);
-
     if (!toUser) return socket.emit('friend_request_result', { success: false, message: 'User not found' });
     if (fromUser.friends.includes(to)) return socket.emit('friend_request_result', { success: false, message: 'Already friends' });
     if (toUser.friendRequests.includes(from)) return socket.emit('friend_request_result', { success: false, message: 'Request already sent' });
 
-    // Add friend request
     toUser.friendRequests.push(from);
     writeUsers(users);
 
-    // Notify sender immediately
-    socket.emit('friend_request_result', { success: true, message: 'Friend request sent' });
-
-    // Notify recipient if online
+    // update recipient requests in real-time
     const recipientSocket = findSocketByUsername(to);
-    if (recipientSocket) {
-        recipientSocket.emit('load_requests', toUser.friendRequests);
-    }
+    if (recipientSocket) io.to(recipientSocket.id).emit('load_requests', toUser.friendRequests);
+
+    socket.emit('friend_request_result', { success: true, message: 'Friend request sent' });
 });
 
+socket.on('accept_request', ({ from, to }) => {
+    const users = readUsers();
+    const fromUser = users.find(u => u.username === from);
+    const toUser = users.find(u => u.username === to);
+    if (!fromUser || !toUser) return;
 
-    socket.on('accept_request', ({ from, to }) => {
-        const users = readUsers();
-        const fromUser = users.find(u => u.username === from);
-        const toUser = users.find(u => u.username === to);
-        if (!fromUser || !toUser) return;
+    // remove from requests and add to friends
+    toUser.friendRequests = toUser.friendRequests.filter(req => req !== from);
+    if (!fromUser.friends.includes(to)) fromUser.friends.push(to);
+    if (!toUser.friends.includes(from)) toUser.friends.push(from);
 
-        toUser.friendRequests = toUser.friendRequests.filter(req => req !== from);
-        if (!fromUser.friends.includes(to)) fromUser.friends.push(to);
-        if (!toUser.friends.includes(from)) toUser.friends.push(from);
+    writeUsers(users);
 
-        writeUsers(users);
-        socket.emit('update_friends', toUser.friends);
-        const fromSocket = findSocketByUsername(from);
-        if (fromSocket) io.to(fromSocket.id).emit('update_friends', fromUser.friends);
-        socket.emit('load_requests', toUser.friendRequests);
-    });
+    // update friends list for both users
+    const fromSocket = findSocketByUsername(from);
+    const toSocket = findSocketByUsername(to);
+    if (fromSocket) io.to(fromSocket.id).emit('update_friends', fromUser.friends);
+    if (toSocket) io.to(toSocket.id).emit('update_friends', toUser.friends);
 
-    socket.on('reject_request', ({ from, to }) => {
-        const users = readUsers();
-        const toUser = users.find(u => u.username === to);
-        if (!toUser) return;
-        toUser.friendRequests = toUser.friendRequests.filter(req => req !== from);
-        writeUsers(users);
-        socket.emit('load_requests', toUser.friendRequests);
-    });
+    // reload requests for recipient
+    if (toSocket) io.to(toSocket.id).emit('load_requests', toUser.friendRequests);
+});
+
+socket.on('reject_request', ({ from, to }) => {
+    const users = readUsers();
+    const toUser = users.find(u => u.username === to);
+    if (!toUser) return;
+    toUser.friendRequests = toUser.friendRequests.filter(req => req !== from);
+    writeUsers(users);
+
+    const toSocket = findSocketByUsername(to);
+    if (toSocket) io.to(toSocket.id).emit('load_requests', toUser.friendRequests);
+});
+
 
     // Messaging
     socket.on('send_message', ({ from, to, message, timestamp }) => {
